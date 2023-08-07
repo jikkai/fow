@@ -50,6 +50,18 @@ export default class Tile {
     return new Tile(filename, id, x, y, blocks)
   }
 
+  static createFromExisting(tile: Tile): Tile {
+    const { filename, id, x, y, blocks } = tile
+
+    const newBlocks = Object.keys(blocks).reduce((acc, key) => {
+      acc[key] = Block.createFromExisting(blocks[key])
+      acc[key].check()
+      return acc
+    }, {} as Blocks)
+
+    return new Tile(filename, id, x, y, newBlocks)
+  }
+
   static create(filename: string, data: ArrayBuffer): Tile {
     // TODO: try catch
     const id = Number.parseInt(

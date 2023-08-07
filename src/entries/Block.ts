@@ -18,6 +18,10 @@ export default class Block {
     this.extraData = extraData
   }
 
+  static createFromExisting(block: Block): Block {
+    return new Block(block.x, block.y, block.bitmap, block.extraData)
+  }
+
   static create(x: number, y: number, data: Uint8Array | null): Block {
     if (data) {
       const bitmap = data.slice(0, BLOCK_BITMAP_SIZE)

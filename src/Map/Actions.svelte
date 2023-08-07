@@ -89,7 +89,7 @@ function handleUploadSuccess (fileList: FileList) {
     }
 
     if (done) {
-      // TODO: move to center?
+      mapController.flyTo(7)
     } else {
       setToast({
         visible: true,

@@ -19,8 +19,12 @@ export default class FogMap {
     this.tiles = tiles
   }
 
-  static createFromTiles(tiles: Tiles): FogMap {
-    return new FogMap(tiles)
+  static async createFromTiles(tiles: Tiles): Promise<FogMap> {
+    const mutableTiles = Object.keys(tiles).reduce((acc, key) => {
+      acc[key] = Tile.createFromExisting(tiles[key])
+      return acc
+    }, {} as Tiles)
+    return new FogMap(mutableTiles)
   }
 
   static createFromFiles(files: [string, ArrayBuffer][]): FogMap {

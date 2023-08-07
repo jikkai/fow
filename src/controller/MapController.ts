@@ -208,6 +208,19 @@ export class MapController {
     this.historyManager.redo(this.applyFogMapUpdate.bind(this))
   }
 
+  flyTo(zoomLevel: number): void {
+    // 获取当前经纬度
+    navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords
+
+      this.map.flyTo({
+        center: [longitude, latitude], // 指定的经度和纬度
+        zoom: zoomLevel, // 缩放级别
+        essential: true // 如果设置为 true，将在用户视线中心的地方执行此操作
+      })
+    })
+  }
+
   handleMouseClick(e: mapboxgl.MapMouseEvent): void {
     if (this.controlMode === ControlMode.Eraser) {
       console.log(

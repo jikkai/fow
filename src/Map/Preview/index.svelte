@@ -17,9 +17,10 @@ let tracks: ITrack[] = []
 onMount(async () => {
   tracks = await getAll()
 })
-function handleRestore (tiles: Tiles) {
-  const newFogmap = FogMap.createFromTiles(tiles)
+async function handleRestore (tiles: Tiles) {
+  const newFogmap = await FogMap.createFromTiles(tiles)
   mapController.replaceFogMap(newFogmap)
+  mapController.flyTo(7)
 
   setToast({
     visible: true,
