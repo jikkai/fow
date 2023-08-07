@@ -65,7 +65,7 @@ class LazyTileCanvas {
         this.context = this.canvas.getContext('2d')!
         this.canvas.width = 512
         this.canvas.height = 512
-        this.context.fillStyle = 'rgba(0, 0, 0,' + this.opacity.toString() + ')'
+        this.context.fillStyle = `rgba(0, 0, 0, ${this.opacity})`
         this.context.fillRect(0, 0, 512, 512)
       } else {
         this.context = this.canvas.getContext('2d')!
@@ -452,7 +452,7 @@ export class MapRenderer {
     if (DEBUG) console.log(this.currentZoom, '-', this.currentTileRange)
     this.mainCtx.clearRect(0, 0, this.mainCanvas.width, this.mainCanvas.height)
     const opacity = this.getCurrentOpacity()
-    this.mainCtx.fillStyle = 'rgba(0, 0, 0,' + opacity.toString() + ')'
+    this.mainCtx.fillStyle = `rgba(0, 0, 0, ${opacity})`
 
     for (let x = left; x <= right; x++) {
       for (let y = top; y <= bottom; y++) {
@@ -502,7 +502,6 @@ export class MapRenderer {
 
   redrawArea(area: Bbox | 'all'): void {
     // TODO: partial redraw?
-    console.log(area)
     this.tileCanvasCache.clear()
     this.renderOnce()
   }

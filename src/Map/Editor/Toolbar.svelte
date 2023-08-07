@@ -97,8 +97,7 @@ const actionTools = [{
   {#each actionTools as btn}
     <button
       class={
-        'flex items-center justify-center mx-2 w-9 h-9 p-2 bg-white shadow rounded-lg hover:bg-gray-200 active:bg-gray-400' +
-        ' pointer-events-auto' +
+        'flex items-center justify-center mx-2 w-9 h-9 p-2 bg-white shadow rounded-lg hover:bg-gray-200 active:bg-gray-400 pointer-events-auto' +
         (btn.enabled ? ' ring-4 ring-gray-700' : '')
       }
       on:click={() => {

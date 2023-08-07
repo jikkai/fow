@@ -20,7 +20,7 @@ onMount(async () => {
 async function handleRestore (tiles: Tiles) {
   const newFogmap = await FogMap.createFromTiles(tiles)
   mapController.replaceFogMap(newFogmap)
-  mapController.flyTo(7)
+  mapController.flyTo()
 
   setToast({
     visible: true,

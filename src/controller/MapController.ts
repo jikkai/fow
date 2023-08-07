@@ -60,7 +60,7 @@ export class MapController {
       if (thisLayer.id.indexOf('-label') > 0) {
         map.setLayoutProperty(thisLayer.id, 'text-field', [
           'get',
-          'name_' + 'zh-Hans'
+          'name_zh-Hans'
         ])
       }
     })
@@ -208,14 +208,15 @@ export class MapController {
     this.historyManager.redo(this.applyFogMapUpdate.bind(this))
   }
 
-  flyTo(zoomLevel: number): void {
+  flyTo(zoomLevel?: number): void {
     // 获取当前经纬度
     navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords
+      const zoom = zoomLevel ?? this.map.getZoom()
 
       this.map.flyTo({
         center: [longitude, latitude], // 指定的经度和纬度
-        zoom: zoomLevel, // 缩放级别
+        zoom, // 缩放级别
         essential: true // 如果设置为 true，将在用户视线中心的地方执行此操作
       })
     })

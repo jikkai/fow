@@ -1,6 +1,7 @@
 <script lang="ts">
-import { Button, Popover, Chevron } from 'flowbite-svelte'
+import { Button, Popover } from 'flowbite-svelte'
 import JSZip, { type JSZipObject } from 'jszip'
+import { Icon } from 'flowbite-svelte-icons'
 import Tabs from '@/components/Tabs/index.svelte'
 import { type MapController, ControlMode } from '@/controller/MapController'
 import { Mode } from '@/entries/enums'
@@ -89,7 +90,7 @@ function handleUploadSuccess (fileList: FileList) {
     }
 
     if (done) {
-      mapController.flyTo(7)
+      mapController.flyTo(10)
     } else {
       setToast({
         visible: true,
@@ -110,7 +111,7 @@ function handleUploadSuccess (fileList: FileList) {
 
 <section class="absolute z-40 top-4 left-4">
   <Button class="text-base font-bold" id="menu" color="alternative">
-    <Chevron>菜单</Chevron>
+    菜单 <Icon name="chevron-down-solid" class="ml-2" size="xs" />
   </Button>
 
   <Popover

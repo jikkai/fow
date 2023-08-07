@@ -59,7 +59,7 @@ export default class FogMap {
     Object.values(this.tiles).forEach((tile) => {
       // just in case
       if (Object.entries(tile.blocks).length !== 0) {
-        syncZip.file('Sync/' + tile.filename, tile.dump())
+        syncZip.file(`Sync/${tile.filename}`, tile.dump())
       }
     })
     return syncZip.generateAsync({ type: 'blob' })

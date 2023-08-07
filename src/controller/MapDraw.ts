@@ -1,23 +1,21 @@
 // This file is basically a wrapper around `@mapbox/mapbox-gl-draw`
 // because we don't have type definitions for it.
 
-/* eslint-disable */
-// @ts-nocheck
-
 import mapboxgl from 'mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import Bbox from '@/entries/Bbox'
+import FogMap from '@/entries/FogMap'
 
 export class MapDraw {
   private map: mapboxgl.Map
   private mapboxDraw: MapboxDraw
-  private getCurrentFogMap: () => fogMap.FogMap
-  private updateFogMap: (newMap: fogMap.FogMap, areaChanged: Bbox) => void
+  private getCurrentFogMap: () => FogMap
+  private updateFogMap: (newMap: FogMap, areaChanged: Bbox) => void
 
   constructor(
     map: mapboxgl.Map,
-    getCurrentFogMap: () => fogMap.FogMap,
-    updateFogMap: (newMap: fogMap.FogMap, areaChanged: Bbox) => void
+    getCurrentFogMap: () => FogMap,
+    updateFogMap: (newMap: FogMap, areaChanged: Bbox) => void
   ) {
     this.map = map
     this.getCurrentFogMap = getCurrentFogMap
@@ -25,31 +23,27 @@ export class MapDraw {
     this.mapboxDraw = new MapboxDraw({
       displayControlsDefault: false,
       defaultMode: 'draw_line_string',
-      styles: [
-        // ACTIVE (being drawn)
-        // line stroke
-        {
-          id: 'gl-draw-line',
-          type: 'line',
-          filter: [
-            'all',
-            ['==', '$type', 'LineString'],
-            ['!=', 'mode', 'static']
-          ],
-          layout: {
-            'line-cap': 'round',
-            'line-join': 'round'
-          },
-          paint: {
-            'line-color': '#969696',
-            'line-dasharray': [0.2, 2],
-            'line-width': 2
-          }
+      styles: [{
+        id: 'gl-draw-line',
+        type: 'line',
+        filter: [
+          'all',
+          ['==', '$type', 'LineString'],
+          ['!=', 'mode', 'static']
+        ],
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        paint: {
+          'line-color': '#969696',
+          'line-dasharray': [0.2, 2],
+          'line-width': 2
         }
-      ]
+      }]
     })
 
-    this.map.on('draw.create', (e: GeoJSON) => {
+    this.map.on('draw.create', (e) => {
       // parse each line segments, apply to fogmap
       for (const geo of e.features) {
         if (geo.geometry.type == 'LineString') {
