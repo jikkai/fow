@@ -25,6 +25,8 @@ function toggleImportModalVisible (visible: boolean) {
   importModalVisible = visible
 }
 
+let zipFilenameWithDate = ''
+
 // 导入地图文件
 function handleUploadSuccess (fileList: FileList) {
   async function createMapFromZip(data: ArrayBuffer): Promise<FogMap> {
@@ -67,6 +69,16 @@ function handleUploadSuccess (fileList: FileList) {
       done = true
     } else {
       if (files.length === 1 && getFileExtension(files[0].name) === 'zip') {
+        if (mode === Mode.Preview) {
+          zipFilenameWithDate = ''
+          const filename = files[0].name
+          // Sync_yyyymmdd.zip => yyyymmdd
+          const date = filename.match(/(\d{8})/)?.[0]
+          if (date) {
+            zipFilenameWithDate = date
+          }
+        }
+
         const data = await readFileAsync(files[0])
         if (data instanceof ArrayBuffer) {
           const map = await createMapFromZip(data)
@@ -126,6 +138,7 @@ function handleUploadSuccess (fileList: FileList) {
     {:else if mode === Mode.Preview}
       <Preview
         mapController={mapController}
+        zipFilenameWithDate={zipFilenameWithDate}
         onOpenImportModal={() => toggleImportModalVisible(true)}
       />
     {/if}

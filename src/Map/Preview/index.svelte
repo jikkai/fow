@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte'
 import dayjs from 'dayjs'
+import { Icon } from 'flowbite-svelte-icons'
 import ActionPanel from '@/components/ActionPanel/index.svelte'
 import { type MapController } from '@/controller/MapController'
 import FogMap from '@/entries/FogMap'
@@ -9,6 +10,7 @@ import { type ITrack, getAll, save } from '@/db/tracks'
 import { setToast } from '@/store/toast'
 
 export let mapController: MapController = null
+export let zipFilenameWithDate = ''
 export let onOpenImportModal = () => {}
 
 let tracks: ITrack[] = []
@@ -21,7 +23,7 @@ function handleRestore (tiles: Tiles) {
 
   setToast({
     visible: true,
-    message: '恢复成功。'
+    message: '加载成功。'
   })
 }
 </script>
@@ -38,8 +40,10 @@ function handleRestore (tiles: Tiles) {
     title: '保存',
     description: '保存记录到本地。',
     onClick: async () => {
+      const zipDate = zipFilenameWithDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+
       const result = await save({
-        date: dayjs().format('YYYY-MM-DD'),
+        date: zipDate || dayjs().format('YYYY-MM-DD'),
         tiles: mapController.fogMap.tiles
       })
       if (result) {
@@ -58,9 +62,10 @@ function handleRestore (tiles: Tiles) {
     <!-- svelte-ignore a11y-invalid-attribute -->
     <a
       href="javascript:void(0)"
-      class="flex items-center cursor-pointer p-2 -m-3 text-sm text-gray-500 transition duration-150 ease-in-out rounded-lg hover:bg-gray-50"
+      class="flex items-center gap-2 cursor-pointer p-2 -m-3 text-xs text-gray-500 transition duration-150 ease-in-out rounded-lg hover:text-blue-500"
       on:click={() => handleRestore(track.tiles)}
     >
+      <Icon name="database-solid" />
       {track.date}
     </a>
   {/each}
