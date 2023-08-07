@@ -1,3 +1,6 @@
+import type Tile from '@/entries/Tile'
+import type Block from '@/entries/Block'
+
 export const FILENAME_MASK1 = 'olhwjsktri'
 export const FILENAME_MASK2 = 'eizxdwknmo'
 
@@ -15,3 +18,9 @@ export const ALL_OFFSET = TILE_WIDTH_OFFSET + BITMAP_WIDTH_OFFSET
 
 export type TileID = number
 export type XYKey = string
+export interface Tiles {
+  [key: XYKey]: Tile
+}
+export interface Blocks {
+  [key: XYKey]: Block
+}

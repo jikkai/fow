@@ -1,4 +1,4 @@
-import { XYKey } from '@/entries/constants'
+import { type XYKey } from '@/entries/constants'
 
 export function makeKeyXY(x: number, y: number): XYKey {
   return `${x}-${y}`

@@ -1,9 +1,9 @@
-import { Md5 } from 'ts-md5'
 import pako from 'pako'
+import { Md5 } from 'ts-md5'
 import Bbox from '@/entries/Bbox'
 import Block from '@/entries/Block'
-import { FILENAME_MASK1, FILENAME_MASK2, MAP_WIDTH, BITMAP_WIDTH, BITMAP_WIDTH_OFFSET, TILE_HEADER_SIZE, TILE_WIDTH, BLOCK_SIZE, TileID, XYKey } from './constants'
 import { makeKeyXY } from '@/utils/helpers'
+import { type Blocks, type TileID, FILENAME_MASK1, FILENAME_MASK2, MAP_WIDTH, BITMAP_WIDTH, BITMAP_WIDTH_OFFSET, TILE_HEADER_SIZE, TILE_WIDTH, BLOCK_SIZE } from './constants'
 
 const FILENAME_ENCODING = FILENAME_MASK1.split('').reduce(
   (acc, cur, idx) => {
@@ -18,14 +18,14 @@ export default class Tile {
   readonly id: TileID
   readonly x: number
   readonly y: number
-  readonly blocks: { [key: XYKey]: Block }
+  readonly blocks: Blocks
 
   private constructor(
     filename: string,
     id: TileID,
     x: number,
     y: number,
-    blocks: { [key: XYKey]: Block }
+    blocks: Blocks
   ) {
     Object.freeze(blocks)
     this.filename = filename
@@ -45,7 +45,7 @@ export default class Tile {
     const name2 = digits.map((d) => FILENAME_MASK2.charAt(d)).join('')
     const filename = `${name0}${name1}${name2.substring(name2.length - 2)}`
 
-    const blocks = {} as { [key: XYKey]: Block }
+    const blocks = {} as Blocks
 
     return new Tile(filename, id, x, y, blocks)
   }
@@ -69,7 +69,7 @@ export default class Tile {
 
     const header = new Uint16Array(actualData.slice(0, TILE_HEADER_SIZE).buffer)
 
-    const blocks = {} as { [key: XYKey]: Block }
+    const blocks = {} as Blocks
 
     for (let i = 0; i < header.length; i++) {
       const blockIdx = header[i]
@@ -157,7 +157,7 @@ export default class Tile {
     xaxis: boolean,
     quadrants13: boolean
   ): [Tile | null, number, number, number] {
-    let mutableBlocks: { [key: XYKey]: Block } | null = null
+    let mutableBlocks: Blocks | null = null
     if (xaxis) {
       // Rasterize the line
       for (let i = 0; x < e; i++) {
@@ -287,7 +287,7 @@ export default class Tile {
     const yMinInt = Math.floor(yMin)
     const yMaxInt = Math.floor(yMax)
 
-    let mutableBlocks: { [key: XYKey]: Block } | null = null
+    let mutableBlocks: Blocks | null = null
 
     for (let x = xMinInt; x <= xMaxInt; x++) {
       for (let y = yMinInt; y <= yMaxInt; y++) {

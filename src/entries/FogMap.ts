@@ -1,8 +1,8 @@
 import JSZip from 'jszip'
 import Bbox from '@/entries/Bbox'
 import Tile from '@/entries/Tile'
-import { ALL_OFFSET, TILE_WIDTH, BITMAP_WIDTH, XYKey } from './constants'
 import { makeKeyXY } from '@/utils/helpers'
+import { type Tiles, ALL_OFFSET, TILE_WIDTH, BITMAP_WIDTH } from './constants'
 
 // TODO: figure out a better way to imeplement immutable data structure
 //       we encountered performance issue when using `immutable.js`
@@ -10,13 +10,17 @@ import { makeKeyXY } from '@/utils/helpers'
 // SAD: Type Aliases do not seem to give us type safety
 
 
-export class FogMap {
-  readonly tiles: { [key: XYKey]: Tile }
+export default class FogMap {
+  readonly tiles: Tiles
   static empty = new FogMap({})
 
-  private constructor(tiles: { [key: XYKey]: Tile }) {
+  private constructor(tiles: Tiles) {
     Object.freeze(tiles)
     this.tiles = tiles
+  }
+
+  static createFromTiles(tiles: Tiles): FogMap {
+    return new FogMap(tiles)
   }
 
   static createFromFiles(files: [string, ArrayBuffer][]): FogMap {
@@ -77,7 +81,7 @@ export class FogMap {
     const [x0, y0] = FogMap.LngLatToGlobalXY(startLng, startLat)
     const [x1, y1] = FogMap.LngLatToGlobalXY(endLng, endLat)
 
-    let mutableTiles: { [key: XYKey]: Tile } | null = null
+    let mutableTiles: Tiles | null = null
 
     // Iterators, counters required by algorithm
     let x, y, px, py, xe, ye
@@ -211,7 +215,7 @@ export class FogMap {
     const yMinInt = Math.floor(yMin)
     const yMaxInt = Math.floor(yMax)
 
-    let mutableTiles: { [key: XYKey]: Tile } | null = null
+    let mutableTiles: Tiles | null = null
 
     for (let x = xMinInt; x <= xMaxInt; x++) {
       for (let y = yMinInt; y <= yMaxInt; y++) {
@@ -244,4 +248,3 @@ export class FogMap {
     }
   }
 }
-
