@@ -1,4 +1,6 @@
 import Dexie, { type Table } from 'dexie'
+import { importDB, exportDB } from 'dexie-export-import'
+import { download } from '@/utils/helpers'
 import { type Tiles } from '@/entries/constants'
 
 export interface ITrack {
@@ -20,6 +22,15 @@ class trackDatabase extends Dexie {
 
 const db = new trackDatabase()
 
+export async function importTracks (file: File) {
+  await importDB(file)
+}
+
+export async function exportTracks () {
+  const blob = await exportDB(db)
+  download(blob, 'tracks.json')
+}
+  
 export async function save (track: { date: string, tiles: Tiles }) {
   const existing = await db.track.where({ date: track.date }).first()
 
@@ -36,10 +47,14 @@ export async function save (track: { date: string, tiles: Tiles }) {
   }
 }
 
-export async function getAll () {
-  return await db.track.toArray() ?? []
+export function getAll () {
+  return db.track.toArray() ?? []
 }
 
-export async function get (id: number) {
-  return await db.track.get(id)
+export function get (id: number) {
+  return db.track.get(id)
+}
+
+export function remove (id: number) {
+  return db.track.delete(id)
 }

@@ -6,17 +6,21 @@ import ActionPanel from '@/components/ActionPanel/index.svelte'
 import { type MapController } from '@/controller/MapController'
 import FogMap from '@/entries/FogMap'
 import { type Tiles } from '@/entries/constants'
-import { type ITrack, getAll, save } from '@/db/tracks'
+import { type ITrack, getAll, save, remove, exportTracks, importTracks } from '@/db/tracks'
 import { setToast } from '@/store/toast'
+import ImportDbModal from './ImportDbModal.svelte'
 
 export let mapController: MapController = null
 export let zipFilenameWithDate = ''
 export let onOpenImportModal = () => {}
 
 let tracks: ITrack[] = []
-onMount(async () => {
+async function getAllTracks () {
   tracks = await getAll()
-})
+  tracks.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
+}
+onMount(getAllTracks)
+
 async function handleRestore (tiles: Tiles) {
   const newFogmap = await FogMap.createFromTiles(tiles)
   mapController.replaceFogMap(newFogmap)
@@ -25,6 +29,31 @@ async function handleRestore (tiles: Tiles) {
   setToast({
     visible: true,
     message: '加载成功。'
+  })
+}
+
+async function handleRemove (id: number) {
+  await remove(id)
+  getAllTracks()
+
+  setToast({
+    visible: true,
+    message: '删除成功。'
+  })
+}
+
+let importModalVisible = false
+function toggleImportModalVisible (visible: boolean) {
+  importModalVisible = visible
+}
+async function handleUploadSuccess (fileList: FileList) {
+  await importTracks(fileList[0])
+  toggleImportModalVisible(false)
+  getAllTracks()
+
+  setToast({
+    visible: true,
+    message: '导入成功。'
   })
 }
 </script>
@@ -48,26 +77,57 @@ async function handleRestore (tiles: Tiles) {
         tiles: mapController.fogMap.tiles
       })
       if (result) {
-        tracks = await getAll()
+        getAllTracks()
         setToast({
           visible: true,
           message: '保存成功。'
         })
       }
     }
+  }, {
+    icon: 'file-import-solid',
+    title: '导入数据库',
+    description: '导入全部记录。',
+    onClick: () => {
+      toggleImportModalVisible(true)
+    }
+  }, {
+    icon: 'download-solid',
+    title: '导出数据库',
+    description: '导出全部记录。',
+    onClick: () => {
+      exportTracks()
+      
+      setToast({
+        visible: true,
+        message: '开始导出。'
+      })
+    }
   }]}
 />
 
-<div class="px-7 py-4 bg-gray-50">
+<section class="px-7 py-4 bg-gray-50">
   {#each tracks as track}
-    <!-- svelte-ignore a11y-invalid-attribute -->
-    <a
-      href="javascript:void(0)"
-      class="flex items-center gap-2 cursor-pointer p-2 -m-3 text-xs text-gray-500 transition duration-150 ease-in-out rounded-lg hover:text-blue-500"
-      on:click={() => handleRestore(track.tiles)}
-    >
-      <Icon name="database-solid" />
-      {track.date}
-    </a>
+    <section class="flex items-center justify-between gap-2 p-2 -m-3 rounded-lg">
+      <div>
+        <button
+          class="text-gray-500 transition duration-150 ease-in-out  text-xs hover:text-blue-500 cursor-pointer"
+          on:click={() => handleRestore(track.tiles)}
+        >
+          {track.date}
+        </button>
+      </div>
+      <div>
+        <button class="hover:text-red-500" on:click={() => handleRemove(track.id)}>
+          <Icon name="trash-bin-solid" size="sm" />
+        </button>
+      </div>
+    </section>
   {/each}
-</div>
+</section>
+
+<ImportDbModal
+  visible={importModalVisible}
+  onClose={() => toggleImportModalVisible(false)}
+  onSuccess={handleUploadSuccess}
+/>
