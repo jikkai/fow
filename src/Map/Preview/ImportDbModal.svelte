@@ -15,6 +15,7 @@ function handleUpload (e: Event) {
 <Modal title="导入数据库" bind:open={visible} on:hide={onClose} autoclose>
   <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
     你的数据将完全在本地处理。<br />
+    导入的数据将会覆盖原来的本地数据。<br />
 
     接受的数据格式：<br />
     - 导出的数据库文件（.json）<br />

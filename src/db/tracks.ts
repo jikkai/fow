@@ -23,6 +23,8 @@ class trackDatabase extends Dexie {
 const db = new trackDatabase()
 
 export async function importTracks (file: File) {
+  // 导入前先清空
+  await db.track.clear()
   await importDB(file)
 }
 

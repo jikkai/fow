@@ -1,7 +1,7 @@
 {
   "name": "fow",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,9 +13,9 @@
     "@sveltejs/vite-plugin-svelte": "^2.4.4",
     "@tsconfig/svelte": "^5.0.0",
     "@types/lodash": "^4.14.196",
-    "@types/mapbox-gl": "^2.7.12",
+    "@types/mapbox-gl": "^2.7.13",
     "@types/mousetrap": "^1.6.11",
-    "@types/node": "^20.4.8",
+    "@types/node": "^20.4.9",
     "@types/pako": "^2.0.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.27",
