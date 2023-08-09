@@ -90,6 +90,7 @@ const actionTools = [{
       <Icon name={btn.icon} />
     </button>
   {/each}
+
   <div
     class="flex items-center justify-center rounded mx-7 w-1 h-9 bg-black shadow"
   />

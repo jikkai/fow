@@ -90,7 +90,7 @@ function handleUploadSuccess (fileList: FileList) {
     }
 
     if (done) {
-      mapController.flyTo(10)
+      mapController.flyTo(15)
     } else {
       setToast({
         visible: true,
