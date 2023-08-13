@@ -32,6 +32,10 @@ async function handleRestore (tiles: Tiles) {
   })
 }
 
+let toBeRemovedId: number | null = null
+function handleCheckRemove (id: number) {
+  toBeRemovedId = id
+}
 async function handleRemove (id: number) {
   await remove(id)
   getAllTracks()
@@ -106,7 +110,7 @@ async function handleUploadSuccess (fileList: FileList) {
   }]}
 />
 
-<section class="px-7 py-4 bg-gray-50">
+<section class="p-4 bg-gray-50">
   {#each tracks as track}
     <section class="flex items-center justify-between gap-2 p-2 -m-3 rounded-lg">
       <div>
@@ -117,9 +121,13 @@ async function handleUploadSuccess (fileList: FileList) {
           {track.date}
         </button>
       </div>
+
       <div>
-        <button class="hover:text-red-500" on:click={() => handleRemove(track.id)}>
-          <Icon name="trash-bin-solid" size="sm" />
+        <button
+          class="hover:text-red-500"
+          on:click={() => toBeRemovedId === track.id ? handleRemove(track.id) : handleCheckRemove(track.id)}
+        >
+          <Icon name={toBeRemovedId === track.id ? 'check-solid' : 'trash-bin-solid'} size="xs" />
         </button>
       </div>
     </section>

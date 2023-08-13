@@ -8,6 +8,7 @@ export let onSuccess = (fileList: FileList) => {}
 function handleUpload (e: Event) {
   const fileList = (e.target as HTMLInputElement).files
 
+  onClose()
   onSuccess(fileList)
 }
 </script>
