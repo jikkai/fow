@@ -1,4 +1,5 @@
 <script lang="ts">
+import { onMount } from 'svelte'
 import { Button, Popover } from 'flowbite-svelte'
 import JSZip, { type JSZipObject } from 'jszip'
 import { Icon } from 'flowbite-svelte-icons'
@@ -8,6 +9,7 @@ import { Mode } from '@/entries/enums'
 import FogMap from '@/entries/FogMap'
 import { setToast } from '@/store/toast'
 import { getFileExtension, readFileAsync } from '@/utils/helpers'
+import { save, getAll } from '@/db/backup'
 import ImportModal from './ImportModal.svelte'
 import Editor from './Editor/index.svelte'
 import Toolbar from './Editor/Toolbar.svelte'
@@ -29,14 +31,14 @@ function toggleImportModalVisible (visible: boolean) {
 let zipFilenameWithDate = ''
 
 // 导入地图文件
-function handleUploadSuccess (fileList: FileList) {
+async function handleUploadSuccess (fileList: FileList) {
   async function createMapFromZip(data: ArrayBuffer): Promise<FogMap> {
     const zip = await new JSZip().loadAsync(data)
     const tileFiles = await formatZipFiles(zip.files)
+    
     const map = FogMap.createFromFiles(tileFiles)
     return map
   }
-
 
   async function formatZipFiles (files: { [key: string]: JSZipObject }) {
     const tileFiles: [string, ArrayBuffer][] = []
@@ -100,13 +102,33 @@ function handleUploadSuccess (fileList: FileList) {
     toggleImportModalVisible(false)
   }
 
-  importFiles(Array.from(fileList))
+  await importFiles(Array.from(fileList))
+
+  // 暂存
+  await save({
+    tiles: mapController.fogMap.tiles
+  })
 
   setToast({
     visible: true,
     message: '导入成功。'
   })
 }
+
+onMount(async () => {
+  const { tiles } = await getAll()
+  if (!tiles) return
+  const newFogmap = await FogMap.createFromTiles(tiles)
+  mapController.replaceFogMap(newFogmap)
+
+  setToast({
+    visible: true,
+    message: '已恢复上次编辑的地图。'
+  })
+
+  // 获取当前经纬度
+  mapController.flyTo(10)
+})
 </script>
 
 <section class="absolute z-40 top-4 left-4">

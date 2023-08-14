@@ -9,18 +9,18 @@ export interface ITrack {
   tiles: Tiles
 }
 
-class trackDatabase extends Dexie {
+class TrackDatabase extends Dexie {
   public track!: Table<ITrack, number> // id is number in this case
 
   public constructor() {
-    super('trackDatabase')
+    super('TrackDatabase')
     this.version(1).stores({
       track: '++id, date, tiles'
     })
   }
 }
 
-const db = new trackDatabase()
+const db = new TrackDatabase()
 
 export async function importTracks (file: File) {
   // 导入前先清空
